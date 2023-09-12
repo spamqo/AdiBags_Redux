@@ -1,13 +1,13 @@
 ## Interface: 30400
 
-## Title: AdiBags Configuration
-## Notes: Adirelle's bag addon.
-## Author: Adirelle
+## Title: AdiBags_Redux Configuration
+## Notes: Janky fork of Adirelle's bag addon.
+## Author: Adirelle, VicarInATutu
 ## Version: @project-version@
 ## X-Date: @project-date-iso@
-## X-Part-Of: AdiBags
+## X-Part-Of: AdiBags_Redux
 ## LoadOnDemand: 1
-## Dependencies: AdiBags
+## Dependencies: AdiBags_Redux
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
 
 #@no-lib-strip@

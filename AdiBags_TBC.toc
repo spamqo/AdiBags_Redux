@@ -1,4 +1,4 @@
-# AdiBags - Adirelle's bag addon.
+# AdiBags_Redux - Janky fork of Adirelle's bag addon.
 # Copyright 2010-2021 Adirelle (adirelle@gmail.com)
 # All rights reserved.
 #
@@ -19,9 +19,9 @@
 
 ## Interface: 20504
 
-## Title: AdiBags
-## Notes: Adirelle's bag addon.
-## Author: Adirelle
+## Title: AdiBags_Redux
+## Notes: Janky fork of Adirelle's bag addon.
+## Author: Adirelle, VicarInATutu
 ## Version: @project-version@
 ## SavedVariables: AdiBagsDB
 ## X-Date: @project-date-iso@
