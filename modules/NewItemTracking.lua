@@ -106,7 +106,6 @@ local function ResetButton_OnClick(widget, button)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	C_NewItems.ClearAll()
 	wipe(newItems)
-	mod.button:Disable()
 	mod:SendMessage('AdiBags_FiltersChanged', true)
 	mod:SendMessage('AdiBags_UpdateAllButtons', true)
 end
@@ -119,9 +118,8 @@ function mod:OnBagFrameCreated(bag)
 		L["Click to reset item status."],
 		L["Right-click to configure."]
 	})
-	self.button:Disable()
 	self:SendMessage('AdiBags_FiltersChanged', true)
-	self:UpdateModuleButton()
+	self.button:SetEnabled(true)
 end
 
 function mod:UpdateButton(event, button)
@@ -132,16 +130,11 @@ function mod:UpdateButton(event, button)
 	local isNew = self:IsNew(button.bag, button.slot, button.itemLink)
 	self:ShowLegacyGlow(button, isNew and mod.db.profile.highlight == "legacy")
 	self:ShowBlizzardGlow(button, isNew and mod.db.profile.highlight == "blizzard")
-	self:UpdateModuleButton()
 end
 
 function mod:StopButtonGlow(event, button)
 	self:ShowLegacyGlow(button, false)
 	self:ShowBlizzardGlow(button, false)
-end
-
-function mod:UpdateModuleButton()
-	self.button:SetEnabled(next(newItems) or self.container.ToSortSection:IsShown())
 end
 
 function mod:AddNewItem(event, link)
