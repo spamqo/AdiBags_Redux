@@ -74,7 +74,6 @@ function mod:OnInitialize()
 		self.db.profile.showGlow = nil
 	end
 
-	addon:SetCategoryOrder(L['New'], 100)
 end
 
 function mod:OnEnable()
@@ -178,12 +177,6 @@ function mod:BAG_NEW_ITEMS_UPDATED(event)
 	end
 end
 
-function mod:Filter(slotData)
-	if self:IsNew(slotData.bag, slotData.slot, slotData.link) then
-		self:UpdateModuleButton()
-		return L["Recent Items"]
-	end
-end
 
 --------------------------------------------------------------------------------
 -- Options

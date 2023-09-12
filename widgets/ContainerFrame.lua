@@ -223,21 +223,7 @@ function containerProto:OnCreate(name, isBank, bagObject)
 	end
 	self.CloseButton = self:CreateCloseButton()
 
-	local toSortSection = addon:AcquireSection(self, L["Recent Items"], self.name)
-	toSortSection:SetPoint("TOPLEFT", BAG_INSET, -addon.TOP_PADDING)
-	toSortSection:Show()
-	self.ToSortSection = toSortSection
-	self:AddWidget(toSortSection)
 
-	-- Override toSortSection handlers
-	toSortSection.ShowHeaderTooltip = function(self, _ , tooltip)
-		tooltip:SetPoint("BOTTOMRIGHT", self.container, "TOPRIGHT", 0, 4)
-		tooltip:AddLine(L["Recent items"], 1, 1, 1)
-		tooltip:AddLine(L["This special section receives items that have been recently moved, changed or added to the bags."])
-	end
-	toSortSection.UpdateHeaderScripts = function() end
-	toSortSection.Header:RegisterForClicks("AnyUp")
-	toSortSection.Header:SetScript("OnClick", function() self:FullUpdate() end)
 	local content
 	if addon.db.profile.gridLayout then
 		content = addon:CreateGridFrame((isBank and "Bank" or "Backpack"), self)
@@ -245,7 +231,7 @@ function containerProto:OnCreate(name, isBank, bagObject)
 	else
 		content = CreateFrame("Frame", nil, self)
 	end
-	content:SetPoint("TOPLEFT", toSortSection, "BOTTOMLEFT", 0, -ITEM_SPACING)
+	content:SetPoint("TOPLEFT", BAG_INSET, -addon.TOP_PADDING)
 	self.Content = content
 	self:AddWidget(content)
 
@@ -641,10 +627,10 @@ function containerProto:OnLayout()
 	if self.forceLayout then
 		self:FullUpdate()
 	end
-	self:Debug('OnLayout Height', self.ToSortSection:GetHeight())
+	self:Debug('OnLayout Height', 0)
 	self:SetSize(
 		BAG_INSET * 2 + max(minWidth, self.Content:GetWidth()),
-		addon.TOP_PADDING + BAG_INSET + bottomHeight + self.Content:GetHeight() + self.ToSortSection:GetHeight() + ITEM_SPACING
+		addon.TOP_PADDING + BAG_INSET + bottomHeight + self.Content:GetHeight() + 0 + ITEM_SPACING
 	)
 	if addon.db.profile.gridLayout then
 		addon.db.profile.gridData = addon.db.profile.gridData or {}
@@ -682,6 +668,7 @@ function containerProto:UpdateContent(bag)
 	local content = self.content[bag]
 	local newSize = self:GetBagIds()[bag] and GetContainerNumSlots(bag) or 0
 	local _, bagFamily = GetContainerNumFreeSlots(bag)
+	local wasRemoved = false
 	if bag == REAGENTBAG_CONTAINER then
 		bagFamily = 2048
 	end
@@ -752,6 +739,7 @@ function containerProto:UpdateContent(bag)
 				if sameItem then
 						changed[slotData.slotId] = slotData
 				else
+					wasRemoved = true
 					removed[prevSlotId] = prevLink
 					added[slotData.slotId] = slotData
 					-- Remove the old item, and add the new item to the
@@ -776,6 +764,9 @@ function containerProto:UpdateContent(bag)
 		end
 	end
 	content.size = newSize
+	if not wasRemoved then
+		self:SendMessage('AdiBags_FiltersChanged', true)
+	end
 end
 
 function containerProto:HasContentChanged()
@@ -892,14 +883,7 @@ function containerProto:DispatchItem(slotData, fullUpdate)
 	button.filterName = filterName
 	self.buttons[slotId] = button
 
-	if button:GetSection() == self.ToSortSection then
-		return
-	end
 
-	if sectionName == L["Recent Items"] or (not fullUpdate and slotData.link) then
-		self.ToSortSection:AddItemButton(slotId, button)
-		return
-	end
 	local section = self:GetSection(sectionName, category or sectionName)
 	section:AddItemButton(slotId, button)
 end
@@ -954,7 +938,6 @@ function containerProto:UpdateButtons()
 	wipe(removed)
 	wipe(changed)
 
-	self:ResizeToSortSection()
 end
 
 --------------------------------------------------------------------------------
@@ -1008,21 +991,6 @@ end
 -- Full Layout
 --------------------------------------------------------------------------------
 
-function containerProto:ResizeToSortSection(forceLayout)
-	local section = self.ToSortSection
-	if section.count == 0 then
-		section:SetSizeInSlots(0, 0)
-		section:Hide()
-		return
-	end
-	local width = max(self.Content:GetWidth(), self.minWidth or 0)
-	local numCols = floor((width + ITEM_SPACING) / (ITEM_SIZE + ITEM_SPACING))
-	local resized = section:SetSizeInSlots(numCols, ceil(section.count / numCols))
-	section:Show()
-	if forceLayout or resized or not section:IsShown() then
-		section:FullLayout()
-	end
-end
 
 function containerProto:RedispatchAllItems()
 	self:Debug('RedispatchAllItems')
@@ -1049,7 +1017,6 @@ function containerProto:RedispatchAllItems()
 	wipe(self.removed)
 	wipe(self.changed)
 
-	self:ResizeToSortSection()
 end
 
 -- Local stateless comparing function for sorting.
@@ -1197,7 +1164,6 @@ function containerProto:FullUpdate()
 	local settings = addon.db.profile
 	local columnWidth = settings.columnWidth[self.name]
 
-	self.ToSortSection:Clear()
 	self:RedispatchAllItems()
 
 	local sections = {}
@@ -1220,7 +1186,6 @@ function containerProto:FullUpdate()
 		--self.Content:SetSize(contentWidth, contentHeight)
 	end
 
-	self:ResizeToSortSection(true)
 	if addon.db.profile.gridLayout then
 		self.Content:DoUpdate()
 	end
