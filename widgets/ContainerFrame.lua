@@ -767,7 +767,7 @@ function containerProto:UpdateContent(bag)
 		end
 	end
 	content.size = newSize
-	if not wasRemoved then
+	if not wasRemoved or self.isBank then
 		self:SendMessage('AdiBags_FiltersChanged', true)
 		self:SendMessage('AdiBags_UpdateAllButtons', true)
 	end
