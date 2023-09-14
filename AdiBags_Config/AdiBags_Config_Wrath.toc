@@ -7,7 +7,7 @@
 ## X-Date: @project-date-iso@
 ## X-Part-Of: AdiBags_Redux
 ## LoadOnDemand: 1
-## Dependencies: AdiBags_Redux
+## Dependencies: AdiBags
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
 
 #@no-lib-strip@
