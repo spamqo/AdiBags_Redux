@@ -619,6 +619,9 @@ function containerProto:OnLayout()
 		self.Title:GetStringWidth() + 32 + (hlr:IsShown() and hlr:GetWidth() or 0) + (hrr:IsShown() and hrr:GetWidth() or 0),
 		(blr:IsShown() and blr:GetWidth() or 0) + (brr:IsShown() and brr:GetWidth() or 0)
 	)
+	local settings = addon.db.profile
+	local columnWidth = settings.columnWidth[self.name]
+	minWidth = (ITEM_SIZE + ITEM_SPACING) * columnWidth - ITEM_SPACING + SECTION_SPACING
 	local bottomHeight = max(
 		blr:IsShown() and (BAG_INSET + blr:GetHeight()) or 0,
 		brr:IsShown() and (BAG_INSET + brr:GetHeight()) or 0

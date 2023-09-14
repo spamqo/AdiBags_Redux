@@ -12,7 +12,7 @@ For more information, please refer to the offical AdiBags addon: https://www.cur
 
 This is a janky hacked up version of AdiBags that removes the "Recent Items" category.  New items can still be configured to highlight/glow, but they will be auto-sorted into the appropriate item category.
 
-As a bonus, the bag window width is statically fixed to 12 columns, regardless of bag usage, because the dynamic sizing drove me nuts.
+As a bonus, the bag window width is fixed to the configured width, instead of being dynamic.
 
 
 
