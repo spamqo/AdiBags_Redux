@@ -742,7 +742,9 @@ function containerProto:UpdateContent(bag)
 				if sameItem then
 						changed[slotData.slotId] = slotData
 				else
+					if (count == 0) then
 					wasRemoved = true
+					end
 					removed[prevSlotId] = prevLink
 					added[slotData.slotId] = slotData
 					-- Remove the old item, and add the new item to the
