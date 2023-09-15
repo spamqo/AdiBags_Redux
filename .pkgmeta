@@ -1,5 +1,7 @@
 package-as: AdiBags
 
+enable-nolib-creation: no
+
 externals:
   libs/LibStub: https://repos.wowace.com/wow/libstub/tags/1.0
   libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
