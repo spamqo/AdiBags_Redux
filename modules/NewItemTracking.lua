@@ -166,7 +166,6 @@ end
 function mod:BAG_NEW_ITEMS_UPDATED(event)
 	if self.button and self.button:IsVisible() then
 		self:SendMessage('AdiBags_UpdateAllButtons', true)
-		self:UpdateModuleButton()
 	end
 end
 
