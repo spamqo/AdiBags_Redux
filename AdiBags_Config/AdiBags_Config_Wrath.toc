@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30402
 
 ## Title: AdiBags_Redux Configuration
 ## Notes: Janky fork of Adirelle's bag addon.
