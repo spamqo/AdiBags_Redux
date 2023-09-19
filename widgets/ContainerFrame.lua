@@ -755,7 +755,9 @@ function containerProto:UpdateContent(bag)
 						end
 					end
 				end
-			elseif slotData.count ~= count then
+			end
+
+			if slotData.count ~= count then
 				slotData.count = count
 				changed[slotData.slotId] = slotData
 			end
@@ -769,10 +771,13 @@ function containerProto:UpdateContent(bag)
 		end
 	end
 	content.size = newSize
+
 	if not wasRemoved or self.isBank then
 		self:SendMessage('AdiBags_FiltersChanged', true)
 	end
-	self:SendMessage('AdiBags_UpdateAllButtons', true)
+
+	self:UpdateButtonCounts()
+
 end
 
 function containerProto:HasContentChanged()
@@ -908,6 +913,15 @@ function containerProto:RemoveSlot(slotId)
 	end
 
 	button:Release()
+end
+
+function containerProto:UpdateButtonCounts()
+	for slotId in pairs(self.buttons) do
+		local button = self.buttons[slotId]
+		if button then
+			button:UpdateCount()
+		end
+	end
 end
 
 function containerProto:UpdateButtons()
