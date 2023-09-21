@@ -105,55 +105,6 @@ function mod:OnDisable()
 	end
 end
 
-function mod:OnBagFrameCreated(bag)
-	if bag.bagName ~= "Backpack" then return end
-	local frame = bag:GetFrame()
-
-	local widget = CreateFrame("Button", addonName .. "CurrencyFrame", frame)
-	self.widget = widget
-	widget:SetHeight(16)
-
-	-- Create the columns used for currency display. Each column has the maximum amount
-	-- of possible cells for the minimum width / the max number of currencies.
-	for i = 1, 10 do
-		local columnFrame = CreateFrame("Button", string.format("%sCurrencyColumnFrame%d", addonName, i), widget)
-		columnFrame:Show()
-		if i == 1 then
-			columnFrame:SetPoint("TOPLEFT", widget, "TOPLEFT")
-		else
-			columnFrame:SetPoint("TOPLEFT", self.columns[i - 1].frame, "TOPRIGHT")
-		end
-		local column = {
-			frame = columnFrame,
-			cells = {}
-		}
-		
-		for ii = 1, ceil(GetCurrencyListSize() / 3) + 1 do
-			local cellFrame = CreateFrame("Button", string.format("%sCurrencyCellFrame%d%d", addonName, i, ii), columnFrame)
-			if ii == 1 then
-				cellFrame:SetPoint("TOPLEFT", columnFrame, "TOPLEFT")
-			else
-				cellFrame:SetPoint("TOPLEFT", column.cells[ii - 1].frame, "BOTTOMLEFT")
-			end
-
-			cellFrame:Show()
-			local fs = cellFrame:CreateFontString(nil, "OVERLAY")
-			fs:SetFontObject(self.font)
-			fs:SetPoint("BOTTOMLEFT", 0, 1)
-			table.insert(column.cells, {
-				frame = cellFrame,
-				fs = fs,
-				text = "",
-				icon = "",
-				name = "",
-			})
-		end
-		table.insert(self.columns, column)
-	end
-	self:Update()
-	frame:AddBottomWidget(widget, "LEFT", 50)
-end
-
 -- Handles differences between the retail and wrath currency apis
 -- There's probably a better way to handle this. I couldn't come up with anything else, so I'm open to suggestions.
 local function GetCurrencyListInfoAgnostic(index)
@@ -180,6 +131,55 @@ local function GetCurrencyListSizeAgnostic()
 	end
 end
 
+function mod:OnBagFrameCreated(bag)
+	if bag.bagName ~= "Backpack" then return end
+	local frame = bag:GetFrame()
+
+	local widget = CreateFrame("Button", addonName .. "CurrencyFrame", frame)
+	self.widget = widget
+	widget:SetHeight(16)
+
+	-- Create the columns used for currency display. Each column has the maximum amount
+	-- of possible cells for the minimum width / the max number of currencies.
+	for i = 1, 10 do
+		local columnFrame = CreateFrame("Button", string.format("%sCurrencyColumnFrame%d", addonName, i), widget)
+		columnFrame:Show()
+		if i == 1 then
+			columnFrame:SetPoint("TOPLEFT", widget, "TOPLEFT")
+		else
+			columnFrame:SetPoint("TOPLEFT", self.columns[i - 1].frame, "TOPRIGHT")
+		end
+		local column = {
+			frame = columnFrame,
+			cells = {}
+		}
+
+		for ii = 1, ceil(GetCurrencyListSizeAgnostic() / 3) + 1 do
+			local cellFrame = CreateFrame("Button", string.format("%sCurrencyCellFrame%d%d", addonName, i, ii), columnFrame)
+			if ii == 1 then
+				cellFrame:SetPoint("TOPLEFT", columnFrame, "TOPLEFT")
+			else
+				cellFrame:SetPoint("TOPLEFT", column.cells[ii - 1].frame, "BOTTOMLEFT")
+			end
+
+			cellFrame:Show()
+			local fs = cellFrame:CreateFontString(nil, "OVERLAY")
+			fs:SetFontObject(self.font)
+			fs:SetPoint("BOTTOMLEFT", 0, 1)
+			table.insert(column.cells, {
+				frame = cellFrame,
+				fs = fs,
+				text = "",
+				icon = "",
+				name = "",
+			})
+		end
+		table.insert(self.columns, column)
+	end
+	self:Update()
+	frame:AddBottomWidget(widget, "LEFT", 50)
+end
+
 local IterateCurrencies
 do
 	local function iterator(collapse, index)
@@ -190,11 +190,11 @@ do
 			if addon.isRetail then
 				currencyListInfo = GetCurrencyListInfoAgnostic(index)
 			elseif addon.isWrath then
-				local name, isHeader, isExpanded, isUnused, isWatched, count, icon, maximum, hasWeeklyLimit, currentWeeklyAmount, unknown, itemID = GetCurrencyListInfoAgnostic(index)
-				
+				local name, isHeader, isExpanded, isUnused, isShowInBackpack, count, icon, maximum, hasWeeklyLimit, currentWeeklyAmount, unknown, itemID = GetCurrencyListInfoAgnostic(index)
+
 				-- Converts the Patch 3.1.0 (Wrath) format to that of Patch 9.0.1 (Shadowlands) to minimize refactoring work
-				currencyListInfo = { name = name, isHeader = isHeader, isHeaderExpanded = isExpanded, isUnused = isUnused, isWatched = isWatched, quantity = count, iconFileID = icon, 
-									 maximum = maximum, hasWeeklyLimit = hasWeeklyLimit, currentWeeklyAmount = currentWeeklyAmount, unknown = unknown, itemID = itemID }
+				currencyListInfo = { name = name, isHeader = isHeader, isHeaderExpanded = isExpanded, isUnused = isUnused, isWatched = isWatched, quantity = count, iconFileID = icon,
+									 maximum = maximum, hasWeeklyLimit = hasWeeklyLimit, currentWeeklyAmount = currentWeeklyAmount, unknown = unknown, itemID = itemID, isShowInBackpack = isShowInBackpack }
 			end
 			if currencyListInfo then
 				if currencyListInfo.name then
