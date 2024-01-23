@@ -671,7 +671,7 @@ function containerProto:UpdateContent(bag)
 	local content = self.content[bag]
 	local newSize = self:GetBagIds()[bag] and GetContainerNumSlots(bag) or 0
 	local _, bagFamily = GetContainerNumFreeSlots(bag)
-	local wasRemoved = false
+	local needUpdate = true
 	if bag == REAGENTBAG_CONTAINER then
 		bagFamily = 2048
 	end
@@ -743,7 +743,7 @@ function containerProto:UpdateContent(bag)
 						changed[slotData.slotId] = slotData
 				else
 					if (count == 0) then
-					wasRemoved = true
+						needUpdate = false
 					end
 					removed[prevSlotId] = prevLink
 					added[slotData.slotId] = slotData
@@ -760,6 +760,7 @@ function containerProto:UpdateContent(bag)
 			if slotData.count ~= count then
 				slotData.count = count
 				changed[slotData.slotId] = slotData
+				needUpdate = true
 			end
 		end
 	end
@@ -772,7 +773,7 @@ function containerProto:UpdateContent(bag)
 	end
 	content.size = newSize
 
-	if not wasRemoved or self.isBank then
+	if needUpdate or self.isBank then
 		self:SendMessage('AdiBags_FiltersChanged', true)
 	end
 
