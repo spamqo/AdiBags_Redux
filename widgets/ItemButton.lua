@@ -147,7 +147,8 @@ end
 function buttonProto:PostClick(...)
 	if ... == "RightButton" then
 		-- print('yay')
-		return self:FullUpdate()
+		addon:SendMessage('AdiBags_UpdateAllButtons')
+		-- return self:FullUpdate()
 	end
 end
 
