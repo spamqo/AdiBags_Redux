@@ -441,6 +441,7 @@ function containerProto:BagsUpdated(event, bagIds)
 		end
 	end
 	self:UpdateButtons()
+	self:SendMessage('AdiBags_UpdateAllButtons', true)
 end
 
 function containerProto:CanUpdate()

@@ -94,7 +94,6 @@ function buttonProto:OnCreate()
 	self:RegisterForClicks("LeftButtonUp","RightButtonUp")
 	self:SetScript('OnShow', self.OnShow)
 	self:SetScript('OnHide', self.OnHide)
-	self:SetScript('PostClick', function(_, ...) return self:PostClick(...) end)
 	self:SetWidth(ITEM_SIZE)
 	self:SetHeight(ITEM_SIZE)
 	self.EmptySlotTextureFile = addon.EMPTY_SLOT_FILE
@@ -142,14 +141,6 @@ end
 
 function buttonProto:SplitStack(split)
 	SplitContainerItem(self.bag, self.slot, split)
-end
-
-function buttonProto:PostClick(...)
-	if ... == "RightButton" then
-		-- print('yay')
-		addon:SendMessage('AdiBags_UpdateAllButtons')
-		-- return self:FullUpdate()
-	end
 end
 
 --------------------------------------------------------------------------------
