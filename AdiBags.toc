@@ -76,6 +76,7 @@ modules\NewItemTracking.lua
 modules\MoneyFrame.lua
 modules\FilterOverride.lua
 modules\ItemLevel.lua
+modules\ItemBOECollectable.lua
 modules\ItemOpenable.lua
 modules\Junk.lua
 modules\CurrencyFrame.lua
